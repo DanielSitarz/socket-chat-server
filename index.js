@@ -6,9 +6,9 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket){
-  
-  //userConnectedEvent();
+io.on('connection', function(socket){    
+
+  userConnectedEvent();
 
   socket.on('chat message', function(data){    
     socket.broadcast.emit('chat message', data);    
@@ -20,7 +20,7 @@ http.listen(process.env.PORT || 5000, function(){
 });
 
 var userConnectedEvent = function(){
-  socket.emit('chat message', {
+  io.emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
       content: "User connected.",
