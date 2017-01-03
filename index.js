@@ -19,7 +19,7 @@ http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:' + process.env.PORT || 5000);
 });
 
-const userConnectedEvent = () => {
+var userConnectedEvent = function(){
   socket.emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
