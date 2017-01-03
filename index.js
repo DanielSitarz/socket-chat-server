@@ -29,7 +29,7 @@ var userConnectedEvent = function(socket){
       sender: "Chat",
       content: "User connected.",
       power: 0,
-      isChatMsg: true
+      isServerMsg: true
   })
 }
 
@@ -39,6 +39,6 @@ var userDisconnectedEvent = function(socket){
       sender: "Chat",
       content: "User disconnected.",
       power: 0,
-      isChatMsg: true
+      isServerMsg: true
   })
 }
