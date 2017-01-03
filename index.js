@@ -7,6 +7,9 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
+  
+  userConnectedEvent();
+
   socket.on('chat message', function(data){    
     socket.broadcast.emit('chat message', data);    
   });
@@ -15,3 +18,12 @@ io.on('connection', function(socket){
 http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:' + process.env.PORT || 5000);
 });
+
+const userConnectedEvent = () => {
+  socket.emit('chat message', {
+      key: (new Date()).getTime(),
+      sender: "Chat",
+      content: "User connected.",
+      power: 0
+  })
+}
