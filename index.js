@@ -19,7 +19,7 @@ io.on('connection', function(socket){
 
     socket.join(socket.chatData.roomName);
 
-    sendMessageFromServer(socket.chatData.userName + " connected.");
+    sendMessageFromServer(socket, socket.chatData.userName + " connected.");
 
      socket.on('chat message', function(data){    
        socket.broadcast.to(socket.chatData.roomName).emit('chat message', data);
@@ -28,11 +28,11 @@ io.on('connection', function(socket){
      socket.on('name change', function(newName){    
        var oldName = socket.chatData.userName;
        socket.chatData.userName = newName;
-       sendMessageFromServer(oldName + " changes name to " + newName + ".");
+       sendMessageFromServer(socket, oldName + " changes name to " + newName + ".");
      }); 
 
      socket.on('disconnect', function(data){    
-       sendMessageFromServer(socket.chatData.userName + " disconnected.");
+       sendMessageFromServer(socket, socket.chatData.userName + " disconnected.");
      });
   });
 });
@@ -41,7 +41,7 @@ http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:' + process.env.PORT || 5000);
 });
 
-var sendMessageFromServer = function(content){
+var sendMessageFromServer = function(socket, content){
   socket.broadcast.to(socket.chatData.roomName).emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
