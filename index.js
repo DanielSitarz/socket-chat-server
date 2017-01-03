@@ -7,20 +7,32 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){            
-  //First what client do is to emit current room name
-  socket.on('enter room', function(roomName){
-    socket.roomName = roomName;
+  //First what client do is emit current chat data
+  /**
+   *  chatData = {
+   *    userName,
+   *    rommName
+   *  } 
+   */
+  socket.on('enter room', function(chatData){
+    socket.chatData = chatData;
 
-    socket.join(roomName);
+    socket.join(socket.chatData.roomName);
 
-    userConnectedEvent(socket); 
+    sendMessageFromServer(socket.chatData.userName + " connected.");
 
      socket.on('chat message', function(data){    
-       socket.broadcast.to(roomName).emit('chat message', data);
+       socket.broadcast.to(socket.chatData.roomName).emit('chat message', data);
+     }); 
+
+     socket.on('name change', function(newName){    
+       var oldName = socket.chatData.userName;
+       socket.chatData.userName = newName;
+       sendMessageFromServer(oldName + " changes name to " + newName + ".");
      }); 
 
      socket.on('disconnect', function(data){    
-       userDisconnectedEvent(socket);
+       sendMessageFromServer(socket.chatData.userName + " disconnected.");
      });
   });
 });
@@ -29,21 +41,11 @@ http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:' + process.env.PORT || 5000);
 });
 
-var userConnectedEvent = function(socket){
-  socket.broadcast.to(socket.roomName).emit('chat message', {
+var sendMessageFromServer = function(content){
+  socket.broadcast.to(socket.chatData.roomName).emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
-      content: "User connected.",
-      power: 0,
-      isServerMsg: true
-  })
-}
-
-var userDisconnectedEvent = function(socket){
-  socket.broadcast.to(socket.roomName).emit('chat message', {
-      key: (new Date()).getTime(),
-      sender: "Chat",
-      content: "User disconnected.",
+      content: content,
       power: 0,
       isServerMsg: true
   })
