@@ -53,6 +53,6 @@ var sendMessageFromServer = function(socket, content, isBroadcasting){
   if(isBroadcasting){
     socket.broadcast.to(socket.chatData.roomName).emit('chat message', msg);
   }else{
-    socket.to(socket.chatData.roomName).emit('chat message', msg);
+    io.to(socket.chatData.roomName).emit('chat message', msg);
   }
 }
