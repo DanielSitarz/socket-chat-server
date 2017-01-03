@@ -19,7 +19,7 @@ io.on('connection', function(socket){
 
     socket.join(socket.chatData.roomName);
 
-    sendMessageFromServer(socket, socket.chatData.userName + " connected.", true);
+    sendMessageFromServer(socket, socket.chatData.userName + " connected.");
 
      socket.on('chat message', function(data){    
        socket.broadcast.to(socket.chatData.roomName).emit('chat message', data);
@@ -28,11 +28,11 @@ io.on('connection', function(socket){
      socket.on('name change', function(newName){    
        var oldName = socket.chatData.userName;
        socket.chatData.userName = newName;
-       sendMessageFromServer(socket, oldName + " changes name to " + newName + ".", false);
+       sendMessageFromServer(socket, oldName + " changes name to " + newName + ".");
      }); 
 
      socket.on('disconnect', function(data){    
-       sendMessageFromServer(socket, socket.chatData.userName + " disconnected.", true);
+       sendMessageFromServer(socket, socket.chatData.userName + " disconnected.");
      });
   });
 });
@@ -41,7 +41,7 @@ http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:' + process.env.PORT || 5000);
 });
 
-var sendMessageFromServer = function(socket, content, isBroadcasting){
+var sendMessageFromServer = function(socket, content){
   var msg = {
       key: (new Date()).getTime(),
       sender: "Chat",
@@ -50,9 +50,5 @@ var sendMessageFromServer = function(socket, content, isBroadcasting){
       isServerMsg: true
   };
 
-  if(isBroadcasting){
-    socket.broadcast.to(socket.chatData.roomName).emit('chat message', msg);
-  }else{
-    io.to(socket.chatData.roomName).emit('chat message', msg);
-  }
+  socket.broadcast.to(socket.chatData.roomName).emit('chat message', msg);
 }
