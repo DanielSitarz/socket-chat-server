@@ -6,16 +6,21 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', function(socket){    
+io.on('connection', function(socket){        
 
-  userConnectedEvent(socket);
-
-  socket.on('chat message', function(data){    
-    socket.broadcast.emit('chat message', data);    
-  });
+  userConnectedEvent(socket); 
 
   socket.on('disconnect', function(data){    
     userDisconnectedEvent(socket);
+  });
+
+  //Client emits current room name
+  socket.on('enter room', function(roomName){
+    socket.join(roomName);
+
+     socket.on('chat message', function(data){    
+       socket.broadcast.to(roomName).emit('chat message', data);
+     }); 
   });
 });
 
