@@ -47,7 +47,7 @@ var sendMessageFromServer = function(socket, content){
       sender: "Chat",
       content: content,
       power: 0,
-      isServerMsg: true
+      isFromServer: true
   };
 
   socket.broadcast.to(socket.chatData.roomName).emit('chat message', msg);
