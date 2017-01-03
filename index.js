@@ -8,10 +8,14 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){    
 
-  userConnectedEvent();
+  userConnectedEvent(socket);
 
   socket.on('chat message', function(data){    
     socket.broadcast.emit('chat message', data);    
+  });
+
+  socket.on('disconnect', function(data){    
+    userDisconnectedEvent(socket);
   });
 });
 
@@ -19,11 +23,22 @@ http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:' + process.env.PORT || 5000);
 });
 
-var userConnectedEvent = function(){
+var userConnectedEvent = function(socket){
   io.emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
       content: "User connected.",
-      power: 0
+      power: 0,
+      isChatMsg: true
+  })
+}
+
+var userDisconnectedEvent = function(socket){
+  io.emit('chat message', {
+      key: (new Date()).getTime(),
+      sender: "Chat",
+      content: "User disconnected.",
+      power: 0,
+      isChatMsg: true
   })
 }
