@@ -24,7 +24,7 @@ http.listen(process.env.PORT || 5000, function(){
 });
 
 var userConnectedEvent = function(socket){
-  io.broadcast.emit('chat message', {
+  socket.broadcast.emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
       content: "User connected.",
@@ -34,7 +34,7 @@ var userConnectedEvent = function(socket){
 }
 
 var userDisconnectedEvent = function(socket){
-  io.broadcast.emit('chat message', {
+  socket.broadcast.emit('chat message', {
       key: (new Date()).getTime(),
       sender: "Chat",
       content: "User disconnected.",
