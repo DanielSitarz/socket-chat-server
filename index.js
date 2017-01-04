@@ -42,11 +42,8 @@ http.listen(process.env.PORT || 5000, function(){
 });
 
 var sendMessageFromServer = function(socket, content){
-  var msg = {
-      key: (new Date()).getTime(),
-      sender: "Chat",
-      content: content,
-      power: 0,
+  var msg = {            
+      content: content,      
       isFromServer: true
   };
 
