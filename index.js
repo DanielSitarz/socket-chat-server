@@ -25,6 +25,13 @@ io.on('connection', function(socket){
        socket.broadcast.to(socket.chatData.roomName).emit('chat message', data);
      }); 
 
+     socket.on('is typing', function(who){    
+       socket.broadcast.to(socket.chatData.roomName).emit('is typing', who);
+     }); 
+     socket.on('stopped typing', function(who){    
+       socket.broadcast.to(socket.chatData.roomName).emit('stopped typing', who);
+     }); 
+
      socket.on('name change', function(newName){    
        var oldName = socket.chatData.userName;
        socket.chatData.userName = newName;
