@@ -21,8 +21,8 @@ io.on('connection', function (socket) {
 
     socket.broadcast.to(socket.chatData.roomName).emit('user enter the room', socket.chatData.userName)
 
-    socket.on('chat message', function (data) {
-      socket.broadcast.to(socket.chatData.roomName).emit('chat message', data)
+    socket.on('message', function (data) {
+      socket.broadcast.to(socket.chatData.roomName).emit('message', data)
     })
 
     socket.on('is typing', function (who) {
@@ -54,5 +54,5 @@ var sendMessageFromServer = function (socket, content) {
     isFromServer: true
   }
 
-  socket.broadcast.to(socket.chatData.roomName).emit('chat message', msg)
+  socket.broadcast.to(socket.chatData.roomName).emit('server message', msg)
 }
