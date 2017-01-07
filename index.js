@@ -19,7 +19,7 @@ io.on('connection', function (socket) {
 
     socket.join(socket.chatData.roomName)
 
-    socket.broadcast.to(socket.chatData.roomName).emit('user enter the room', socket.chatData.userName)
+    io.to(socket.chatData.roomName).emit('user enter the room', socket.chatData.userName)
 
     socket.on('chat message', function (data) {
       socket.broadcast.to(socket.chatData.roomName).emit('chat message', data)
