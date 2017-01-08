@@ -14,32 +14,36 @@ io.on('connection', function (socket) {
    *    rommName
    *  }
    */
-  socket.on('enter room', function (chatData) {
+  socket.on('user enter room', function (chatData) {
     socket.chatData = chatData
 
     socket.join(socket.chatData.roomName)
 
-    socket.broadcast.to(socket.chatData.roomName).emit('user enter the room', socket.chatData.userName)
+    socket.broadcast.to(socket.chatData.roomName).emit('user connected', socket.chatData.userName)
 
-    socket.on('message', function (data) {
-      socket.broadcast.to(socket.chatData.roomName).emit('message', data)
+    socket.on('user sent message', function (data) {
+      socket.broadcast.to(socket.chatData.roomName).emit('user sent message', data)
     })
 
-    socket.on('is typing', function (who) {
-      socket.broadcast.to(socket.chatData.roomName).emit('is typing', who)
+    socket.on('user is typing', function (who) {
+      socket.broadcast.to(socket.chatData.roomName).emit('user is typing', who)
     })
-    socket.on('stopped typing', function (who) {
-      socket.broadcast.to(socket.chatData.roomName).emit('stopped typing', who)
+    socket.on('user stopped typing', function (who) {
+      socket.broadcast.to(socket.chatData.roomName).emit('user stopped typing', who)
     })
 
-    socket.on('name change', function (newName) {
+    socket.on('user changes name', function (newName) {
       var oldName = socket.chatData.userName
       socket.chatData.userName = newName
-      sendMessageFromServer(socket, oldName + ' changes name to ' + newName + '.')
+
+      socket.broadcast.to(socket.chatData.roomName).emit('user changed name', {
+        oldName: oldName,
+        newName: newName
+      })
     })
 
     socket.on('disconnect', function (data) {
-      sendMessageFromServer(socket, socket.chatData.userName + ' disconnected.')
+      socket.broadcast.to(socket.chatData.roomName).emit('user disconnected', socket.chatData.userName)
     })
   })
 })
@@ -47,12 +51,3 @@ io.on('connection', function (socket) {
 http.listen(process.env.PORT || 5000, function () {
   console.log('listening on *:' + process.env.PORT || 5000)
 })
-
-var sendMessageFromServer = function (socket, content) {
-  var msg = {
-    content: content,
-    isFromServer: true
-  }
-
-  socket.broadcast.to(socket.chatData.roomName).emit('server message', msg)
-}
