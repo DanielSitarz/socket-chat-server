@@ -43,7 +43,7 @@ io.on('connection', function (socket) {
     })
 
     socket.on('disconnect', function (data) {
-      socket.broadcast.to(socket.chatData.roomName).emit('user disconnected', socket.chatData.userName)
+      socket.broadcast.to(socket.chatData.roomName).emit('user left room', socket.chatData.userName)
     })
   })
 })
