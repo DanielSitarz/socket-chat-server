@@ -7,19 +7,19 @@ app.get('/', function (req, res) {
 })
 
 io.on('connection', function (socket) {
-  // First what client do is emit current chat data
+  // First what user do is emit his chat data
   /**
    *  chatData = {
    *    userName,
-   *    rommName
+   *    roomName
    *  }
    */
   socket.on('user enter room', function (chatData) {
-    socket.chatData = chatData
+    socket.chatData = chatData || {}
 
     socket.join(socket.chatData.roomName)
 
-    socket.broadcast.to(socket.chatData.roomName).emit('user connected', socket.chatData.userName)
+    socket.broadcast.to(socket.chatData.roomName).emit('user enter room', socket.chatData.userName)
 
     socket.on('user sent message', function (data) {
       socket.broadcast.to(socket.chatData.roomName).emit('user sent message', data)
